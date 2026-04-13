@@ -13,6 +13,8 @@ This repository is my submission for the **Opsera AI Agents Hackathon** (April 1
 |---|---|---|
 | **Architecture agent** | Mapped the 6-service topology, surfaced resilience risks (no replicas, no circuit breakers, rate limiting only at the gateway) | [Opsera_reports/Architecture/Opsera_architeture_result.md](Opsera_reports/Architecture/Opsera_architeture_result.md) + [diagram](Opsera_reports/screenshots/Opsera_architecture.png) |
 | **Security agent** | Ran Gitleaks, Semgrep (SAST), Grype (SCA), Checkov (IaC), Hadolint (Dockerfile linting) | [Opsera_reports/Security/Summary.md](Opsera_reports/Security/Summary.md) · raw: [semgrep.json](Opsera_reports/Security/semgrep.json) · [grype.txt](Opsera_reports/Security/grype.txt) |
+| **Compliance agent** | CIS Docker · OWASP ASVS L1 · PCI-DSS SAQ-A · GDPR data-handling subset | [Opsera_reports/Compliance/Summary.md](Opsera_reports/Compliance/compliance-audit-soc2-2026-04-14) |
+
 
 ### Headline findings & fixes (before → after)
 | Finding | Source | Before | After |

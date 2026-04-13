@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOC 2 Compliance Audit Report - opsera-hackathon-ecart</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1, h2, h3 { color: #333; }
+        .score { font-size: 2em; color: red; }
+        .section { margin-bottom: 20px; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>SOC 2 Compliance Audit Report</h1>
+    <p><strong>Project:</strong> opsera-hackathon-ecart</p>
+    <p><strong>Framework:</strong> SOC 2</p>
+    <p><strong>Scope:</strong> Full</p>
+    <p><strong>Date:</strong> 2026-04-14</p>
+    <p><strong>Overall Score:</strong> <span class="score">45/100</span></p>
+
+    <h2>Compliance Posture</h2>
+    <div class="section">
+        <h3>Control Categories</h3>
+        <table>
+            <tr><th>Category</th><th>Status</th><th>Score</th><th>Key Gaps</th></tr>
+            <tr><td>Access Control</td><td>Partial</td><td>70</td><td>No MFA for admin access</td></tr>
+            <tr><td>Encryption</td><td>Fail</td><td>30</td><td>No TLS, no encryption at rest</td></tr>
+            <tr><td>Logging</td><td>Partial</td><td>50</td><td>No audit logging for admin actions</td></tr>
+            <tr><td>Change Management</td><td>Fail</td><td>20</td><td>No CI/CD pipeline</td></tr>
+            <tr><td>Vulnerability Management</td><td>Partial</td><td>60</td><td>No automated scanning</td></tr>
+            <tr><td>Business Continuity</td><td>Fail</td><td>10</td><td>No backups or DR plan</td></tr>
+            <tr><td>Policies & Documentation</td><td>Fail</td><td>20</td><td>No formal security policies</td></tr>
+        </table>
+    </div>
+
+    <h2>Gaps & Findings</h2>
+    <div class="section">
+        <h3>Top Gaps</h3>
+        <ol>
+            <li><strong>Encryption in Transit:</strong> No TLS configured for API communications, exposing data to interception. Severity: Critical. Files: docker-compose.yml</li>
+            <li><strong>Multi-Factor Authentication:</strong> Admin access lacks MFA, increasing risk of unauthorized access. Severity: High. Files: backend/services/auth/controllers/authController.js</li>
+            <li><strong>Audit Logging:</strong> No audit logs for security events or admin actions. Severity: High. Files: None</li>
+        </ol>
+    </div>
+
+    <h2>Remediation & Roadmap</h2>
+    <div class="section">
+        <h3>Quick Wins</h3>
+        <ul>
+            <li>Add TLS termination at the gateway (e.g., using nginx or Traefik)</li>
+            <li>Implement MFA for admin logins (e.g., using TOTP)</li>
+            <li>Add audit logging middleware for admin actions</li>
+        </ul>
+        <h3>Next Steps</h3>
+        <p>Implement CI/CD with automated security scanning, add database encryption, create incident response plan.</p>
+    </div>
+</body>
+</html>
