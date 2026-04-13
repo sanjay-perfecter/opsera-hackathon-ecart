@@ -1,0 +1,19 @@
+{
+  "name": "metayb-ecommerce",
+  "version": "1.0.0",
+  "description": "MERN stack e-commerce application for vegetables and fruits",
+  "scripts": {
+    "install-all": "npm install && cd frontend && npm install && cd ../backend/gateway && npm install && cd ../services/auth && npm install && cd ../user && npm install && cd ../product && npm install && cd ../cart-order && npm install && cd ../payment && npm install",
+    "dev:gateway": "cd backend/gateway && npm run dev",
+    "dev:auth": "cd backend/services/auth && npm run dev",
+    "dev:user": "cd backend/services/user && npm run dev",
+    "dev:product": "cd backend/services/product && npm run dev",
+    "dev:cart-order": "cd backend/services/cart-order && npm run dev",
+    "dev:payment": "cd backend/services/payment && npm run dev",
+    "dev:frontend": "cd frontend && npm start",
+    "seed": "cd backend/services/product && npm run seed"
+  },
+  "keywords": ["mern", "ecommerce", "microservices"],
+  "author": "",
+  "license": "ISC"
+}

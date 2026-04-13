@@ -1,0 +1,23 @@
+# Backend services
+backend/*/node_modules
+backend/*/*/node_modules
+backend/services/*/node_modules
+
+# Frontend
+frontend/node_modules
+frontend/build
+
+# Uploads
+backend/services/product/uploads/*
+!backend/services/product/uploads/.gitkeep
+
+# Env files
+.env
+.env.local
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db

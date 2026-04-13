@@ -1,0 +1,166 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:7
+    container_name: metayb-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=metayb-ecommerce
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - metayb-network
+
+  # API Gateway
+  gateway:
+    build: ./backend/gateway
+    container_name: metayb-gateway
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=development
+      - GATEWAY_PORT=5000
+      - AUTH_SERVICE_URL=http://auth-service:5001
+      - USER_SERVICE_URL=http://user-service:5002
+      - PRODUCT_SERVICE_URL=http://product-service:5003
+      - CART_ORDER_SERVICE_URL=http://cart-order-service:5004
+      - PAYMENT_SERVICE_URL=http://payment-service:5005
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      - auth-service
+      - user-service
+      - product-service
+      - cart-order-service
+      - payment-service
+    networks:
+      - metayb-network
+
+  # Auth Service
+  auth-service:
+    build: ./backend/services/auth
+    container_name: metayb-auth-service
+    restart: unless-stopped
+    ports:
+      - "5001:5001"
+    environment:
+      - NODE_ENV=development
+      - AUTH_SERVICE_PORT=5001
+      - MONGODB_URI=mongodb://mongodb:27017/metayb-ecommerce
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - JWT_EXPIRE=1h
+      - JWT_REFRESH_EXPIRE=7d
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      - mongodb
+    networks:
+      - metayb-network
+
+  # User Service
+  user-service:
+    build: ./backend/services/user
+    container_name: metayb-user-service
+    restart: unless-stopped
+    ports:
+      - "5002:5002"
+    environment:
+      - NODE_ENV=development
+      - USER_SERVICE_PORT=5002
+      - MONGODB_URI=mongodb://mongodb:27017/metayb-ecommerce
+      - AUTH_SERVICE_URL=http://auth-service:5001
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      - mongodb
+      - auth-service
+    networks:
+      - metayb-network
+
+  # Product Service
+  product-service:
+    build: ./backend/services/product
+    container_name: metayb-product-service
+    restart: unless-stopped
+    ports:
+      - "5003:5003"
+    environment:
+      - NODE_ENV=development
+      - PRODUCT_SERVICE_PORT=5003
+      - MONGODB_URI=mongodb://mongodb:27017/metayb-ecommerce
+      - AUTH_SERVICE_URL=http://auth-service:5001
+      - FRONTEND_URL=http://localhost:3000
+    volumes:
+      - product-uploads:/app/uploads
+    depends_on:
+      - mongodb
+      - auth-service
+    networks:
+      - metayb-network
+
+  # Cart/Order Service
+  cart-order-service:
+    build: ./backend/services/cart-order
+    container_name: metayb-cart-order-service
+    restart: unless-stopped
+    ports:
+      - "5004:5004"
+    environment:
+      - NODE_ENV=development
+      - CART_ORDER_SERVICE_PORT=5004
+      - MONGODB_URI=mongodb://mongodb:27017/metayb-ecommerce
+      - AUTH_SERVICE_URL=http://auth-service:5001
+      - PRODUCT_SERVICE_URL=http://product-service:5003
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      - mongodb
+      - auth-service
+      - product-service
+    networks:
+      - metayb-network
+
+  # Payment Service
+  payment-service:
+    build: ./backend/services/payment
+    container_name: metayb-payment-service
+    restart: unless-stopped
+    ports:
+      - "5005:5005"
+    environment:
+      - NODE_ENV=development
+      - PAYMENT_SERVICE_PORT=5005
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - CART_ORDER_SERVICE_URL=http://cart-order-service:5004
+      - PRODUCT_SERVICE_URL=http://product-service:5003
+      - FRONTEND_URL=http://localhost:3000
+    depends_on:
+      - cart-order-service
+    networks:
+      - metayb-network
+
+  # Frontend
+  frontend:
+    build: ./frontend
+    container_name: metayb-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000/api
+      - REACT_APP_STRIPE_PUBLIC_KEY=${STRIPE_PUBLIC_KEY}
+    depends_on:
+      - gateway
+    networks:
+      - metayb-network
+
+networks:
+  metayb-network:
+    driver: bridge
+
+volumes:
+  mongodb-data:
+  product-uploads:
